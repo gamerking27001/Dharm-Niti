@@ -1,7 +1,7 @@
-# Dharma-Nīti 🕉️  
+# Dharma-Nīti  
 ### An Explainable Strategy for the Iterated Prisoner’s Dilemma
 
-## 📌 Overview
+## Overview
 **Dharma-Nīti** is a rule-based, fully explainable strategy for the **Iterated Prisoner’s Dilemma (IPD)**.  
 It is designed to maximize **long-term payoff** by balancing **cooperation, proportional retaliation, noise tolerance, and conditional forgiveness**.
 
@@ -9,7 +9,7 @@ Instead of using black-box learning or reinforcement learning, the strategy leve
 
 ---
 
-## 🧠 Core Idea
+## Core Idea
 In repeated interactions, blind greed and blind forgiveness both fail.  
 Dharma-Nīti follows the principle of *long-term rationality*:
 
@@ -23,7 +23,7 @@ This mirrors real-world strategic interactions where stability matters more than
 
 ---
 
-## ⚙️ Strategy Characteristics
+## Strategy Characteristics
 
 - **Explainable & Deterministic**  
   Every decision is driven by clear rules—no hidden learning or randomness.
@@ -43,7 +43,7 @@ This mirrors real-world strategic interactions where stability matters more than
 
 ---
 
-## 📊 Behavioral Features Used
+## Behavioral Features Used
 The strategy computes interpretable features aligned with standard IPD datasets:
 
 - Overall opponent cooperation rate  
@@ -55,7 +55,7 @@ These features guide decision thresholds in an explainable manner.
 
 ---
 
-## 🧩 Decision Logic (High Level)
+## Decision Logic (High Level)
 
 1. Cooperate on the first move  
 2. Continue any active proportional retaliation  
@@ -65,7 +65,7 @@ These features guide decision thresholds in an explainable manner.
 
 ---
 
-## 🛠️ Implementation
+## Implementation
 - Language: **Python**
 - Dependencies: **Python Standard Library only**
 - Core class: `DharmaNitiStrategy`
@@ -76,7 +76,7 @@ These features guide decision thresholds in an explainable manner.
 
 ---
 
-## 🎯 Evaluation
+## Evaluation
 The strategy is designed to perform well in:
 - Long tournaments (100–200 rounds)
 - Matches against:
@@ -92,7 +92,7 @@ Performance is evaluated using:
 
 ---
 
-## 🏛️ Philosophy
+## Philosophy
 Inspired by the concept of **Dharma-Nīti (righteous strategy)**:
 > Strength without wisdom leads to ruin,  
 > and wisdom without strength invites exploitation.
@@ -101,11 +101,11 @@ This strategy seeks the balance.
 
 ---
 
-## 📄 License
+## License
 This project is intended for academic, educational, and competitive use.
 
 ---
 
-## ✨ Authors
+## Authors
 Developed as part of **Turing’s Playground / Weekend of Code (WOC)**  
 by a team exploring explainable and ethical decision-making in strategic AI.
