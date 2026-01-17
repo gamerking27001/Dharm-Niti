@@ -94,8 +94,7 @@ Performance is evaluated using:
 
 ## Philosophy
 Inspired by the concept of **Dharma-Nīti (righteous strategy)**:
-> Strength without wisdom leads to ruin,  
-> and wisdom without strength invites exploitation.
+Strength without wisdom leads to ruin, and wisdom without strength invites exploitation.
 
 This strategy seeks the balance.
 
