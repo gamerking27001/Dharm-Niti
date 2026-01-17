@@ -68,10 +68,10 @@ These features guide decision thresholds in an explainable manner.
 ## Implementation
 - Language: **Python**
 - Dependencies: **Python Standard Library only**
-- Core class: `DharmaNitiStrategy`
+- Core class: DharmaNitiStrategy
 - Key methods:
-  - `decide_move()` – determines next action
-  - `update_history()` – updates internal state
+  - decide_move() – determines next action
+  - update_history() – updates internal state
   - Feature computation & helper functions
 
 ---
