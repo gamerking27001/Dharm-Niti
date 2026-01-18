@@ -47,34 +47,3 @@ Decision Tree Rules:
 |   |   |--- retaliation_rate >  0.40
 |   |   |   |--- value: [2.24]
 
-
-========================================
-MODEL 3: K-MEANS CLUSTERING (Archetypes)
-========================================
-
-Cluster Averages:
-         coop_rate  first_move_c  ...  forgiveness_rate  Median_score
-Cluster                           ...                                
-0         0.497314      0.540971  ...          0.522121      2.240378
-1         0.737195      0.446407  ...          0.694428      1.903128
-2         0.264929      0.603414  ...          0.217945      2.525454
-3         0.487239      0.269971  ...          0.248591      2.389753
-
-[4 rows x 6 columns]
-
-Cluster Sizes:
-Cluster
-0    145244
-1     43388
-2     43934
-3     39769
-Name: count, dtype: int64
-
-WINNING ARCHETYPE (Cluster 2):
-coop_rate           0.264929
-first_move_c        0.603414
-provocability       0.719691
-retaliation_rate    0.776710
-forgiveness_rate    0.217945
-Median_score        2.525454
-Name: 2, dtype: float64
