@@ -5,8 +5,6 @@ import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor, export_text
-from sklearn.cluster import KMeans
-from sklearn.preprocessing import StandardScaler
 
 def load_data(data_dir):
     """Loads and aggregates all CSV files from the directory."""
@@ -83,33 +81,6 @@ def run_modeling(df):
     tree_rules = export_text(dt, feature_names=feature_cols)
     print("\nDecision Tree Rules:")
     print(tree_rules)
-    
-    # --- MODEL 3: K-MEANS CLUSTERING ---
-    print("\n" + "="*40)
-    print("MODEL 3: K-MEANS CLUSTERING (Archetypes)")
-    print("="*40)
-    
-    # Standardize features for clustering
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-    
-    kmeans = KMeans(n_clusters=4, random_state=42, n_init=10)
-    df_clean['Cluster'] = kmeans.fit_predict(X_scaled)
-    
-    # Analyze Clusters
-    cluster_stats = df_clean.groupby('Cluster')[feature_cols + [target_col]].mean()
-    cluster_counts = df_clean['Cluster'].value_counts().sort_index()
-    
-    print("\nCluster Averages:")
-    print(cluster_stats)
-    print("\nCluster Sizes:")
-    print(cluster_counts)
-    
-    best_cluster_id = cluster_stats[target_col].idxmax()
-    best_cluster_profile = cluster_stats.loc[best_cluster_id]
-    
-    print(f"\nWINNING ARCHETYPE (Cluster {best_cluster_id}):")
-    print(best_cluster_profile)
     
     return
 
