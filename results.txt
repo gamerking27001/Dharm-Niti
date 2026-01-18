@@ -1,0 +1,80 @@
+Loading 3926 files from processed_data...
+Error reading processed_data\2376.csv: No columns to parse from file
+
+Data Shape for Modeling: (272335, 5)
+
+========================================
+MODEL 1: LINEAR REGRESSION (Global Weights)
+========================================
+
+Feature Coefficients (sorted by magnitude):
+coop_rate          -0.642858
+provocability       0.552066
+retaliation_rate    0.309472
+first_move_c       -0.193265
+forgiveness_rate    0.066916
+dtype: float64
+
+Interpretation:
+Features that INCREASE Score: ['provocability', 'retaliation_rate', 'forgiveness_rate']
+Features that DECREASE Score: ['coop_rate', 'first_move_c']
+
+========================================
+MODEL 2: DECISION TREE (Rule Extraction)
+========================================
+
+Decision Tree Rules:
+|--- coop_rate <= 0.60
+|   |--- provocability <= 0.71
+|   |   |--- provocability <= 0.54
+|   |   |   |--- value: [2.22]
+|   |   |--- provocability >  0.54
+|   |   |   |--- value: [2.36]
+|   |--- provocability >  0.71
+|   |   |--- first_move_c <= 0.26
+|   |   |   |--- value: [2.79]
+|   |   |--- first_move_c >  0.26
+|   |   |   |--- value: [2.41]
+|--- coop_rate >  0.60
+|   |--- retaliation_rate <= 0.24
+|   |   |--- coop_rate <= 0.83
+|   |   |   |--- value: [1.82]
+|   |   |--- coop_rate >  0.83
+|   |   |   |--- value: [1.60]
+|   |--- retaliation_rate >  0.24
+|   |   |--- retaliation_rate <= 0.40
+|   |   |   |--- value: [2.01]
+|   |   |--- retaliation_rate >  0.40
+|   |   |   |--- value: [2.24]
+
+
+========================================
+MODEL 3: K-MEANS CLUSTERING (Archetypes)
+========================================
+
+Cluster Averages:
+         coop_rate  first_move_c  ...  forgiveness_rate  Median_score
+Cluster                           ...                                
+0         0.497314      0.540971  ...          0.522121      2.240378
+1         0.737195      0.446407  ...          0.694428      1.903128
+2         0.264929      0.603414  ...          0.217945      2.525454
+3         0.487239      0.269971  ...          0.248591      2.389753
+
+[4 rows x 6 columns]
+
+Cluster Sizes:
+Cluster
+0    145244
+1     43388
+2     43934
+3     39769
+Name: count, dtype: int64
+
+WINNING ARCHETYPE (Cluster 2):
+coop_rate           0.264929
+first_move_c        0.603414
+provocability       0.719691
+retaliation_rate    0.776710
+forgiveness_rate    0.217945
+Median_score        2.525454
+Name: 2, dtype: float64
