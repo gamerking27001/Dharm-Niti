@@ -65,14 +65,12 @@ def plot_winner_loser_comparison(df, feature_cols, target_col):
     
     df_clean = df.dropna(subset=feature_cols + [target_col])
     
-    # Define thresholds
     top_threshold = df_clean[target_col].quantile(0.90)
     bottom_threshold = df_clean[target_col].quantile(0.10)
     
     winners = df_clean[df_clean[target_col] >= top_threshold][feature_cols].mean()
     losers = df_clean[df_clean[target_col] <= bottom_threshold][feature_cols].mean()
     
-    # Prepare data for plotting
     comparison_df = pd.DataFrame({
         'Feature': feature_cols,
         'Winners (Top 10%)': winners,
@@ -97,16 +95,16 @@ def plot_winner_loser_comparison(df, feature_cols, target_col):
 def main():
     processed_dir = r"processed_data"
     
-    # 1. Load Data
+    
     df = load_data(processed_dir)
     
     if df is not None:
         feature_cols = ['coop_rate', 'first_move_c', 'provocability', 'retaliation_rate', 'forgiveness_rate']
         target_col = 'Median_score'
         
-        # 2. Generate Plots
+    
         plot_feature_importance(df, feature_cols, target_col)
-        plot_heatmap(df)
+        
         plot_winner_loser_comparison(df, feature_cols, target_col)
         print("\nAll visualizations completed.")
 
