@@ -16,8 +16,7 @@ def load_data(data_dir):
         
     print(f"Loading {len(all_files)} files from {data_dir}...")
     
-    # Use a generator/iterator approach if memory is an issue, but for <20k files of 100 rows, 
-    # it might fit in memory. Let's try loading all.
+
     df_list = []
     for f in all_files:
         try:
@@ -34,11 +33,11 @@ def load_data(data_dir):
 def run_modeling(df):
     """Runs the 3 requested ML models."""
     
-    # 1. Prep Data
+
     feature_cols = ['coop_rate', 'first_move_c', 'provocability', 'retaliation_rate', 'forgiveness_rate']
     target_col = 'Median_score'
     
-    # Drop rows with missing features or target
+
     df_clean = df.dropna(subset=feature_cols + [target_col])
     
     X = df_clean[feature_cols]
@@ -46,7 +45,7 @@ def run_modeling(df):
     
     print(f"\nData Shape for Modeling: {X.shape}")
     
-    # --- MODEL 1: LINEAR REGRESSION ---
+
     print("\n" + "="*40)
     print("MODEL 1: LINEAR REGRESSION (Global Weights)")
     print("="*40)
@@ -70,7 +69,7 @@ def run_modeling(df):
     print(f"Features that INCREASE Score: {positive_impact}")
     print(f"Features that DECREASE Score: {negative_impact}")
 
-    # --- MODEL 2: DECISION TREE ---
+
     print("\n" + "="*40)
     print("MODEL 2: DECISION TREE (Rule Extraction)")
     print("="*40)
@@ -86,12 +85,11 @@ def run_modeling(df):
 
 def main():
     processed_dir = r"processed_data"
-    
-    # 1. Load
+ 
     df = load_data(processed_dir)
     
     if df is not None:
-        # 2. Run Models
+       
         run_modeling(df)
 
 if __name__ == "__main__":
