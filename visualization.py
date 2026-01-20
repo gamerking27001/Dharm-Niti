@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.ensemble import RandomForestRegressor
 
-# Set style for publication-ready plots
 sns.set_style("whitegrid")
 plt.rcParams.update({'font.size': 12})
 
@@ -59,37 +58,6 @@ def plot_feature_importance(df, feature_cols, target_col):
     plt.savefig('feature_importance.png', dpi=300)
     plt.close()
     print("Saved feature_importance.png")
-
-def plot_heatmap(df):
-    """Viz 2: Heatmap of Death (Coop Rate vs Retaliation)"""
-    print("Generating Heatmap...")
-    
-    # Filter for relevant columns and drop NaNs
-    cols = ['coop_rate', 'retaliation_rate', 'Median_score']
-    df_clean = df.dropna(subset=cols).copy()
-    
-    # Create bins
-    df_clean['coop_bins'] = pd.cut(df_clean['coop_rate'], bins=10, labels=False)
-    df_clean['ret_bins'] = pd.cut(df_clean['retaliation_rate'], bins=10, labels=False)
-    
-    # Pivot for heatmap
-    pivot_table = df_clean.groupby(['ret_bins', 'coop_bins'])['Median_score'].mean().unstack()
-    
-    # Sort index/columns to ensure correct axis direction (low to high)
-    pivot_table.sort_index(ascending=False, inplace=True) # High retaliation on top
-    
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(pivot_table, cmap='RdYlGn', annot=True, fmt=".1f", 
-                xticklabels=np.round(np.linspace(0, 1, 10), 1),
-                yticklabels=np.round(np.linspace(1, 0, 10), 1)) # Reversed for proper Y-axis
-    
-    plt.title('The Sweet Spot: Cooperation vs. Retaliation', fontsize=16)
-    plt.xlabel('Cooperation Rate (Nice)')
-    plt.ylabel('Retaliation Rate (Nasty)')
-    plt.tight_layout()
-    plt.savefig('heatmap.png', dpi=300)
-    plt.close()
-    print("Saved heatmap.png")
 
 def plot_winner_loser_comparison(df, feature_cols, target_col):
     """Viz 3: Top 10% vs Bottom 10% Profile"""
