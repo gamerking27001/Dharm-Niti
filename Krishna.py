@@ -1,70 +1,68 @@
 """
 Dharma-Nīti Strategy for Iterated Prisoner's Dilemma
 
-This strategy follows long-term rational cooperation principles.
-It begins with cooperation, retaliates proportionally against betrayal,
-and gradually forgives when the opponent reforms.
+A fully rule-based, deterministic, and explainable strategy.
+Machine Learning is used only offline to justify thresholds.
 
-Machine Learning is used only offline to justify thresholds and rules.
-The final strategy is fully rule-based, deterministic, and explainable.
+Core principles:
+- Trust first
+- Punish betrayal proportionally
+- Forgive genuine reform
+- Avoid endless retaliation
 """
 
 
 class DharmaNitiStrategy:
-    """
-    A rule-based Iterated Prisoner's Dilemma strategy that balances:
-    - Cooperation
-    - Proportional retaliation
-    - Controlled forgiveness
-
-    The strategy is robust to noise and avoids permanent defection cycles.
-    """
-
     def __init__(self):
-        # === MOVE HISTORY ===
-        self.opponent_history = []
+        # === HISTORY ===
         self.own_history = []
+        self.opponent_history = []
 
-        # === BEHAVIOR TRACKING ===
-        self.opponent_defections = 0
+        # === STATE TRACKING ===
+        self.total_rounds = 0
+        self.consecutive_opponent_defections = 0
         self.betrayals = 0
-        self.consecutive_defections = 0
+        self.rounds_since_last_betrayal = 0
 
         # === RETALIATION CONTROL ===
         self.retaliation_remaining = 0
-        self.rounds_since_betrayal = 0
+        self.in_retaliation_phase = False
 
-        # === ML-DERIVED THRESHOLDS (OFFLINE ANALYSIS) ===
-        self.COOPERATIVE_THRESHOLD = 0.70     # Strong cooperation indicator
-        self.BETRAYAL_THRESHOLD = 0.30        # Exploitative behavior indicator
-        self.RECENT_WINDOW = 15               # Trend stability window
-        self.NOISE_TOLERANCE = 2               # Allowed accidental defections
-        self.FORGIVENESS_WINDOW = 5            # Required reform length
+        # === ML-JUSTIFIED THRESHOLDS (OFFLINE) ===
+        self.COOPERATIVE_THRESHOLD = 0.70
+        self.BETRAYAL_RATE_THRESHOLD = 0.30
+        self.RECENT_WINDOW = 15
+        self.NOISE_TOLERANCE = 1
+        self.FORGIVENESS_WINDOW = 5
+        self.MIN_ROUNDS_FOR_JUDGMENT = 10
 
 
+    # ==============================
+    # MAIN DECISION FUNCTION
+    # ==============================
     def decide_move(self) -> str:
-        """
-        Decide the next move based on opponent behavior.
-        Returns: "C" (Cooperate) or "D" (Defect)
-        """
-
         # Rule 1: Start with cooperation
-        if not self.opponent_history:
+        if self.total_rounds == 0:
             return "C"
 
         features = self._compute_features()
 
-        # Rule 2: Execute proportional retaliation if active
+        # Rule 2: Execute retaliation if active
         if self.retaliation_remaining > 0:
             self.retaliation_remaining -= 1
+
+            # Auto-exit retaliation phase cleanly
+            if self.retaliation_remaining == 0:
+                self.in_retaliation_phase = False
+
             return "D"
 
-        # Rule 3: Grant forgiveness if opponent reforms
+        # Rule 3: Forgive if opponent has genuinely reformed
         if self._should_forgive(features):
-            self._reset_retaliation()
+            self._reset_retaliation_state()
             return "C"
 
-        # Rule 4: Respond to opponent defection
+        # Rule 4: Respond to opponent's last move
         if self.opponent_history[-1] == "D":
             return self._handle_defection(features)
 
@@ -72,113 +70,128 @@ class DharmaNitiStrategy:
         return self._handle_cooperation(features)
 
 
+    # ==============================
+    # UPDATE STATE AFTER EACH ROUND
+    # ==============================
     def update_history(self, own_move: str, opponent_move: str):
-        """Update internal state after each round."""
-
         self.own_history.append(own_move)
         self.opponent_history.append(opponent_move)
+        self.total_rounds += 1
 
         if opponent_move == "D":
-            self.opponent_defections += 1
-            self.consecutive_defections += 1
+            self.consecutive_opponent_defections += 1
+
+            # Betrayal = opponent defects while we cooperate
             if own_move == "C":
                 self.betrayals += 1
-                self.rounds_since_betrayal = 0
+                self.rounds_since_last_betrayal = 0
         else:
-            self.consecutive_defections = 0
-            self.rounds_since_betrayal += 1
+            self.consecutive_opponent_defections = 0
+            self.rounds_since_last_betrayal += 1
 
 
+    # ==============================
+    # FEATURE COMPUTATION
+    # ==============================
     def _compute_features(self) -> dict:
-        """Compute interpretable opponent behavior metrics."""
-
-        total = len(self.opponent_history)
+        total = self.total_rounds
         coop_count = self.opponent_history.count("C")
 
         overall_coop = coop_count / total
-        recent = self.opponent_history[-min(self.RECENT_WINDOW, total):]
-        recent_coop = recent.count("C") / len(recent)
 
-        our_coop = self.own_history.count("C")
-        betrayal_rate = self.betrayals / our_coop if our_coop else 0
+        recent_slice = self.opponent_history[-min(self.RECENT_WINDOW, total):]
+        recent_coop = recent_slice.count("C") / len(recent_slice)
+
+        own_coop = self.own_history.count("C")
+        betrayal_rate = (
+            self.betrayals / own_coop
+            if own_coop >= self.MIN_ROUNDS_FOR_JUDGMENT
+            else 0.0
+        )
 
         return {
             "overall_coop": overall_coop,
             "recent_coop": recent_coop,
             "betrayal_rate": betrayal_rate,
-            "aggressive_streak": self.consecutive_defections >= 3,
+            "aggressive_streak": self.consecutive_opponent_defections >= 2,
             "total_rounds": total
         }
 
 
+    # ==============================
+    # DEFLECTION HANDLING
+    # ==============================
     def _handle_defection(self, features: dict) -> str:
-        """
-        Respond to opponent defection using proportional retaliation.
-        """
-
-        # Noise tolerance: ignore isolated mistakes by cooperative opponents
+        # Noise tolerance: forgive one accidental defection
         if (
             features["overall_coop"] > self.COOPERATIVE_THRESHOLD
-            and self.consecutive_defections == 1
-            and self.opponent_defections <= self.NOISE_TOLERANCE
+            and self.consecutive_opponent_defections <= self.NOISE_TOLERANCE
         ):
             return "C"
 
-        # Single betrayal → Tit-for-Tat response
-        if self.consecutive_defections == 1:
-            self.retaliation_remaining = 1
+        # First clear betrayal → single retaliation
+        if self.consecutive_opponent_defections == 1:
+            self._start_retaliation(1)
             return "D"
 
-        # Sustained aggression → escalated but limited retaliation
+        # Sustained aggression → bounded retaliation
         if features["aggressive_streak"]:
-            self.retaliation_remaining = min(3, self.consecutive_defections)
+            self._start_retaliation(min(2, self.consecutive_opponent_defections))
             return "D"
 
-        # High betrayal frequency → defensive stance
-        if features["betrayal_rate"] > self.BETRAYAL_THRESHOLD:
-            self.retaliation_remaining = 2
+        # High betrayal frequency → defensive posture
+        if features["betrayal_rate"] > self.BETRAYAL_RATE_THRESHOLD:
+            self._start_retaliation(2)
             return "D"
 
         return "D"
 
 
+    # ==============================
+    # COOPERATION HANDLING
+    # ==============================
     def _handle_cooperation(self, features: dict) -> str:
-        """
-        Respond to opponent cooperation.
-        """
-
-        # Reward strong cooperation
+        # Strong cooperative opponent
         if features["overall_coop"] > self.COOPERATIVE_THRESHOLD:
             return "C"
 
-        # Reward improving behavior
+        # Improving behavior
         if features["recent_coop"] > 0.60:
             return "C"
 
-        # Cautious testing against exploiters
-        if features["betrayal_rate"] > self.BETRAYAL_THRESHOLD:
-            return "C" if features["total_rounds"] % 3 == 0 else "D"
+        # Cautious probing against exploiters
+        if features["betrayal_rate"] > self.BETRAYAL_RATE_THRESHOLD:
+            return "C" if self.total_rounds % 4 == 0 else "D"
 
         return "C"
 
 
+    # ==============================
+    # FORGIVENESS LOGIC
+    # ==============================
     def _should_forgive(self, features: dict) -> bool:
-        """
-        Check whether opponent has demonstrated sustained reform.
-        """
-
-        if features["total_rounds"] < self.FORGIVENESS_WINDOW:
+        if features["total_rounds"] < self.MIN_ROUNDS_FOR_JUDGMENT:
             return False
 
-        recent = self.opponent_history[-self.FORGIVENESS_WINDOW:]
+        recent_moves = self.opponent_history[-self.FORGIVENESS_WINDOW:]
+
         return (
-            all(move == "C" for move in recent)
-            and self.rounds_since_betrayal >= self.FORGIVENESS_WINDOW
+            all(move == "C" for move in recent_moves)
+            and self.rounds_since_last_betrayal >= self.FORGIVENESS_WINDOW
             and features["recent_coop"] > 0.80
         )
 
 
-    def _reset_retaliation(self):
-        """Clear retaliation state after forgiveness."""
+    # ==============================
+    # RETALIATION CONTROL
+    # ==============================
+    def _start_retaliation(self, length: int):
+        if not self.in_retaliation_phase:
+            self.retaliation_remaining = length
+            self.in_retaliation_phase = True
+
+
+    def _reset_retaliation_state(self):
         self.retaliation_remaining = 0
-        self.consecutive_defections = 0
+        self.in_retaliation_phase = False
+        self.consecutive_opponent_defections = 0
