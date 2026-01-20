@@ -7,22 +7,22 @@ def calculate_features(df):
     """
     Calculates behavioral features for a given DataFrame.
     """
-    # 1. coop_rate
+
     df['coop_rate'] = df['Cooperation_rating']
 
-    # 2. first_move_c
+
     df['first_move_c'] = df['Initial_C_rate']
 
-    # 3. provocability
+    #  provocability
     opp_coop_prob = df['CC_rate'] + df['DC_rate']
     prob_defect_given_opp_c = (
         (1 - df['CC_to_C_rate']) * df['CC_rate'] + 
         (1 - df['DC_to_C_rate']) * df['DC_rate']
     )
-    # Avoid division by zero
+   
     df['provocability'] = np.where(opp_coop_prob > 0, prob_defect_given_opp_c / opp_coop_prob, 0.0)
 
-    # 4. retaliation_rate
+    #  retaliation_rate
     opp_defect_prob = df['CD_rate'] + df['DD_rate']
     prob_defect_given_opp_d = (
         (1 - df['CD_to_C_rate']) * df['CD_rate'] + 
@@ -30,15 +30,15 @@ def calculate_features(df):
     )
     df['retaliation_rate'] = np.where(opp_defect_prob > 0, prob_defect_given_opp_d / opp_defect_prob, 0.0)
 
-    # 5. forgiveness_rate
+    #  forgiveness_rate
     df['forgiveness_rate'] = df['DC_to_C_rate']
 
-    # Cleaning
+  
     features_to_clean = ['provocability', 'retaliation_rate', 'forgiveness_rate', 'coop_rate', 'first_move_c']
     df[features_to_clean] = df[features_to_clean].fillna(0.0)
     df[features_to_clean] = df[features_to_clean].clip(0.0, 1.0)
 
-    # Ensure Target is numeric
+  
     df['Median_score'] = pd.to_numeric(df['Median_score'], errors='coerce')
     df = df.dropna(subset=['Median_score'])
     
@@ -65,10 +65,10 @@ def load_and_process_data(data_dir, output_dir):
     
     for filename in all_files:
         try:
-            # Read CSV
+         
             df = pd.read_csv(filename)
             
-            # Metadata
+            
             basename = os.path.basename(filename)
             noise_level_str = os.path.splitext(basename)[0]
             if noise_level_str.isdigit():
@@ -76,10 +76,8 @@ def load_and_process_data(data_dir, output_dir):
             else:
                  df['Noise_Level'] = np.nan
 
-            # Calculate Features PER FILE
             df = calculate_features(df)
 
-            # Sample 100 rows
             if len(df) > 100:
                 df = df.sample(n=100, random_state=42)
             
@@ -87,8 +85,7 @@ def load_and_process_data(data_dir, output_dir):
             output_path = os.path.join(output_dir, basename)
             df.to_csv(output_path, index=False)
             
-            # Collect for summary (append only if it's not too huge, 
-            # but since we sampled down to 100, appending all is fine for analysis)
+        
             summary_dfs.append(df)
             
         except Exception as e:
@@ -98,8 +95,7 @@ def load_and_process_data(data_dir, output_dir):
         return None
 
     print(f"Successfully saved individual processed files to {output_dir}")
-    
-    # Return concatenated sample for final print analysis
+
     return pd.concat(summary_dfs, ignore_index=True)
 
 def main():
