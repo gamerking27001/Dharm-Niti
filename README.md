@@ -59,10 +59,11 @@ This mirrors real-world strategic interactions where **stability** matters more 
 ## 📊 Behavioral Features used in `feature_engineering.py`
 The strategy computes interpretable features aligned with standard IPD datasets:
 
-- **Overall Opponent Cooperation Rate**: Frequency of 'C' moves.
-- **Recent Cooperation Trend**: behavior in the last `N` rounds.
-- **Betrayal Frequency**: Defection immediately after our cooperation.
-- **Aggression Persistence**: Length of defection streaks.
+- **🔥 Provocability**: The probability of defecting when the opponent cooperates (Unprovoked aggression).
+- **⚔️ Retaliation Rate**: The probability of defecting immediately after the opponent defects.
+- **🌱 Forgiveness Rate**: The probability of returning to cooperation after a defecting state.
+- **🤝 Cooperation Rate**: The overall frequency of cooperative moves.
+- **🏁 First Move C**: The probability of cooperating on the very first move.
 
 These features guide decision thresholds in an explainable manner.
 
