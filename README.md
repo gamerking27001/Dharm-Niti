@@ -78,12 +78,6 @@ These features guide decision thresholds in an explainable manner.
 
 ---
 
-## 🚀 How to Run
-
-### Prerequisities
-- Python 3.x
-- Pandas, NumPy
-
 
 
 ## 💻 Implementation Details
