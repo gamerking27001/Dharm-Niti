@@ -1,107 +1,116 @@
-# Dharma-Nīti  
-### An Explainable Strategy for the Iterated Prisoner’s Dilemma
+#  Dharma-Nīti: The Righteous Strategy
+### ⚖️ An Explainable Strategy for the Iterated Prisoner’s Dilemma
 
-## Overview
+---
+
+## 📜 Overview
 **Dharma-Nīti** is a rule-based, fully explainable strategy for the **Iterated Prisoner’s Dilemma (IPD)**.  
 It is designed to maximize **long-term payoff** by balancing **cooperation, proportional retaliation, noise tolerance, and conditional forgiveness**.
 
 Instead of using black-box learning or reinforcement learning, the strategy leverages **ML-informed behavioral insights** to guide transparent decision rules.
 
+> *"Strength without wisdom leads to ruin, and wisdom without strength invites exploitation."*
+
 ---
 
-## Core Idea
+## ⚔️ Team: KODE KILLERS
+
+**Members:**
+- **Lavneesh** (Team Leader)
+- **Deepanshu**
+- **Malika**
+- **Jatin**
+
+---
+
+## 💡 Core Idea
 In repeated interactions, blind greed and blind forgiveness both fail.  
-Dharma-Nīti follows the principle of *long-term rationality*:
+**Dharma-Nīti** follows the principle of *long-term rationality*:
 
-- Start with cooperation to establish trust  
-- Retaliate proportionally against betrayal  
-- Tolerate occasional noise or accidental defections  
-- Forgive only after sustained behavioral reform  
-- Avoid permanent mutual defection loops  
+- 🤝 **Start with Cooperation** to establish trust.
+- ⚔️ **Retaliate Proportionally** against betrayal.
+- 🛡️ **Tolerate Noise** (accidental defections).
+- 🌱 **Forgive** only after sustained behavioral reform.
+- 🛑 **Avoid Deadlocks** (permanent mutual defection loops).
 
-This mirrors real-world strategic interactions where stability matters more than short-term gains.
+This mirrors real-world strategic interactions where **stability** matters more than short-term gains.
 
 ---
 
-## Strategy Characteristics
+## ✨ Strategy Characteristics
 
-- **Explainable & Deterministic**  
+- **🔍 Explainable & Deterministic**  
   Every decision is driven by clear rules—no hidden learning or randomness.
 
-- **ML-Informed, Not ML-Controlled**  
-  Machine learning is used *offline* to analyze successful IPD strategies and derive thresholds (e.g., cooperation and betrayal rates).  
-  Final gameplay decisions remain rule-based.
+- **🤖 ML-Informed, Not ML-Controlled**  
+  Machine learning is used *offline* to analyze successful IPD strategies and derive thresholds (e.g., cooperation and betrayal rates). Final gameplay decisions remain rule-based.
 
-- **Robust to Noise**  
+- **🛡️ Robust to Noise**  
   Single or rare defections are treated as noise, preventing overreaction.
 
-- **Resistant to Exploitation**  
+- **🛡️ Resistant to Exploitation**  
   Persistent betrayal triggers escalating but finite retaliation.
 
-- **Forgiving, Not Forgetful**  
+- **🌱 Forgiving, Not Forgetful**  
   Trust is rebuilt only after sustained cooperative behavior.
 
 ---
 
-## Behavioral Features Used
+## 📊 Behavioral Features used in `feature_engineering.py`
 The strategy computes interpretable features aligned with standard IPD datasets:
 
-- Overall opponent cooperation rate  
-- Recent cooperation trend (rolling window)  
-- Betrayal frequency (defection after cooperation)  
-- Aggression persistence (defection streaks)  
+- **Overall Opponent Cooperation Rate**: Frequency of 'C' moves.
+- **Recent Cooperation Trend**: behavior in the last `N` rounds.
+- **Betrayal Frequency**: Defection immediately after our cooperation.
+- **Aggression Persistence**: Length of defection streaks.
 
 These features guide decision thresholds in an explainable manner.
 
 ---
 
-## Decision Logic (High Level)
+## 🧠 Decision Logic (High Level) in `Krishna.py`
 
-1. Cooperate on the first move  
-2. Continue any active proportional retaliation  
-3. Forgive after sustained reform  
-4. Respond to defection based on severity and history  
-5. Reward cooperation and encourage stability  
-
----
-
-## Implementation
-- Language: **Python**
-- Dependencies: **Python Standard Library only**
-- Core class: DharmaNitiStrategy
-- Key methods:
-  - decide_move() – determines next action
-  - update_history() – updates internal state
-  - Feature computation & helper functions
+1.  **Trust**: Cooperate on the first move.
+2.  **Justice**: Continue any active proportional retaliation.
+3.  **Mercy**: Forgive after sustained reform.
+4.  **Defense**: Respond to defection based on severity and history.
+5.  **Reciprocity**: Reward cooperation and encourage stability.
 
 ---
 
-## Evaluation
-The strategy is designed to perform well in:
-- Long tournaments (100–200 rounds)
-- Matches against:
-  - Always Cooperate
-  - Always Defect
-  - Tit-for-Tat–like strategies
-  - Exploitative or noisy opponents
+## 🚀 How to Run
 
-Performance is evaluated using:
-- Average payoff per match  
-- Stability of cooperation  
-- Resistance to exploitation  
+### Prerequisities
+- Python 3.x
+- Pandas, NumPy
+
+
+
+## 💻 Implementation Details
+- **Language**: Python 🐍
+- **Dependencies**: Standard Library + Pandas/NumPy for analysis.
+- **Core Class**: `DharmaNitiStrategy`
+- **Key Methods**:
+  - `decide_move()` – determines next action.
+  - `update_history()` – updates internal state.
 
 ---
 
-## Philosophy
-Inspired by the concept of **Dharma-Nīti (righteous strategy)**:
-Strength without wisdom leads to ruin, and wisdom without strength invites exploitation.
+## 🏆 Evaluation Goals
+The strategy is designed to excel in:
+- Long tournaments (100–200 rounds).
+- Matches against diverse opponents (Friendly, Hostile, Random).
+- High-noise environments.
 
-This strategy seeks the balance.
+**Key Metrics:**
+- Average payoff per match.
+- Stability of cooperation.
+- Resistance to exploitation.
 
 ---
 
 ## License
-This project is intended for academic, educational, and competitive use.
+This project is intended for **academic, educational, and competitive use**.
 
 ---
 
